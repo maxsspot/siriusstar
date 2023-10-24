@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;800&display=swap" rel="stylesheet">
+		<title>Sirius Star - Game</title>
+	</head>
+	<body>
+        <div id = "winscreen">
+            <h1 id = "first"><b><span id = "winningfirst"></span></b> is in <span style = "text-decoration:dotted underline;">1st place</span> with <b><span id = "winningfirstpoints"></span></b> points!</h1>
+            <h1 id = "second"><b><span id = "winningsecond"></span></b> is in <span style = "text-decoration:dotted underline;">2nd place</span> with <b><span id = "winningsecondpoints"></span></b> points!</h1>
+            <h1 id = "tied"><b><span id = "tied1name"></span> and <span id = "tied2name"></span></b> <span style = "text-decoration:dotted underline;">tied</span> with <b><span id = "tiedpoints"></span></b> points!</h1>
+        </div>
+        <div id = "teamselector">
+		    <h1>SIRIUS</h1>
+            <input placeholder="Team 1 name..." id = "team1name" />
+            <br>
+            <input placeholder="Team 2 name..." id = "team2name" />
+            <br>
+            <br>
+            <button id = "start" onclick = "start()" disabled>START</button>
+        </div>
+        <div id = "questions">
+            <h1 id = "pointPlus">+1 Point!</h1>
+            <h1 id = "pointMinus">-1 Point</h1>
+            <h1 style = "text-decoration:dotted underline 1px;">GO, <span id = "currentteam"></span>!</h1>
+            <div id = "q1">
+                <h2>What kind of star is Sirius?</h2>
+                <button id = "red" onclick = "correct1()">Average</button>
+                <br>
+                <br>
+                <button id = "green" onclick = "wrong1()">Massive</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "wrong1()">Red Giant</button>
+            </div>
+            <div id = "q2">
+                <h2>How many light years is Sirius away from Earth?</h2>
+                <button id = "red" onclick = "wrong2()">10 light years</button>
+                <br>
+                <br>
+                <button id = "green" onclick = "correct2()">8.6 light years</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "wrong2()">20 light years</button>
+            </div>
+            <div id = "q3">
+                <h2>Sirius is the brightest star in the night sky?</h2>
+                <button id = "red" onclick = "correct3()">True</button>
+                <br>
+                <br>
+                <button id = "green" onclick = "wrong3()">False</button>
+            </div>
+            <div id = "q4">
+                <h2>A stellar nebula is...</h2>
+                <button id = "red" onclick = "wrong4()">An expanding glowing shell of very hot gas.</button>
+                <br>
+                <br>
+                <button id = "green" onclick = "wrong4()">A common type of star.</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "correct4()">A cloud of dust and gas.</button>
+            </div>
+            <div id = "q5">
+                <h2>An average star is...</h2>
+                <button id = "green" onclick = "correct5()">A common type of star.</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "wrong5()">Red Giant.</button>
+                <br>
+                <br>
+                <button id = "red" onclick = "wrong5()">Supernova.</button>
+            </div>
+            <div id = "q6">
+                <h2>The name Sirius means...</h2>
+                <button id = "green" onclick = "correct6()">Glowing</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "wrong6()">Dimly lit</button>
+                <br>
+                <br>
+                <button id = "red" onclick = "wrong6()">Ceiling Tile</button>
+            </div>
+            <div id = "q7">
+                <h2>What is the final stage in it's lifecycle?</h2>
+                <button id = "green" onclick = "wrong7()">Planetary Nebula</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "wrong7()">Red Giant</button>
+                <br>
+                <br>
+                <button id = "red" onclick = "correct7()">White Dwarf</button>
+            </div>
+            <div id = "q8">
+                <h2>What is the second stage in it's lifecycle?</h2>
+                <button id = "green" onclick = "wrongfinal()">White dwarf</button>
+                <br>
+                <br>
+                <button id = "blue" onclick = "correctfinal()">Average star</button>
+                <br>
+                <br>
+                <button id = "red" onclick = "wrongfinal()">Stellar nebula</button>
+            </div>
+        <br>
+        <h2 id = "yes">Question <span id = "currentquestion"></span>/8</h2>
+        <br>
+        <h2><span id = "team1scorename"></span> has: <span id = "team1scorepoints"></span> points!</h2>
+        <h2><span id = "team2scorename"></span> has: <span id = "team2scorepoints"></span> points!</h2>
+        </div>
+<script>
+// Variables
+var team1name = document.getElementById ("team1name");
+var team2name = document.getElementById ("team2name");
+var startbutton = document.getElementById ("start");
+var teamselector = document.getElementById ("teamselector");
+
+var currentTeam = 0;
+var currentTeamShown = document.getElementById ("currentteam");
+var currentQuestion = 1;
+var currentQuestionShown = document.getElementById ("currentquestion");
+var questions = document.getElementById ("questions");
+var pointPlus = document.getElementById ("pointPlus");
+var pointMinus = document.getElementById ("pointMinus");
+
+var team1points = 0;
+var team2points = 0;
+
+var q1 = document.getElementById ("q1");
+var q2 = document.getElementById ("q2");
+var q3 = document.getElementById ("q3");
+var q4 = document.getElementById ("q4");
+var q5 = document.getElementById ("q5");
+var q6 = document.getElementById ("q6");
+var q7 = document.getElementById ("q7");
+var q8 = document.getElementById ("q8");
+
+// Checks necessary information 
+setInterval (function () {
+    // Verifies names
+    if (team1name.value.length > 0 && team2name.value.length > 0) {
+        startbutton.disabled = false;
+        startbutton.style.color = "white";
+    } else {
+        startbutton.disabled = true;
+        startbutton.style.color = "rgb(158, 158, 158)";
+    }
+
+    // Shows current team
+    if (currentTeam == 0) {
+        currentTeamShown.innerHTML = team1name.value;
+        //pointfor.innerHTML = team1name.value;
+    } else {
+        currentTeamShown.innerHTML = team2name.value;
+        //pointfor.innerHTML = team2name.value;
+    }
+
+    // Shows current question out of 8
+    currentQuestionShown.innerHTML = currentQuestion;
+
+    // Shows current score
+    document.getElementById ("team1scorepoints").innerHTML = team1points;
+    document.getElementById ("team2scorepoints").innerHTML = team2points;
+
+    // Sets some text
+    document.getElementById ("team1scorename").innerHTML = team1name.value;
+document.getElementById ("team2scorename").innerHTML = team2name.value;
+}, 1)
+
+// Starts game
+function start () {
+    teamselector.style.opacity = "0";
+    teamselector.style.pointerEvents = "none";
+    
+    setTimeout (function() {
+        teamselector.style.display = "none";
+        questions.style.opacity = "1";
+        questions.style.pointerEvents = "all";
+    }, 1000)
+}
+
+
+function correct1 () {
+    q1.style.display = "none";
+    q2.style.display = "block";
+
+    correct();
+}
+function wrong1 () {
+    q1.style.display = "none";
+    q2.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct2 () {
+    q2.style.display = "none";
+    q3.style.display = "block";
+
+    correct();
+}
+function wrong2 () {
+    q2.style.display = "none";
+    q3.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct3 () {
+    q3.style.display = "none";
+    q4.style.display = "block";
+
+    correct();
+}
+function wrong3 () {
+    q3.style.display = "none";
+    q4.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct4 () {
+    q4.style.display = "none";
+    q5.style.display = "block";
+
+    correct();
+}
+function wrong4 () {
+    q4.style.display = "none";
+    q5.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct5 () {
+    q5.style.display = "none";
+    q6.style.display = "block";
+
+    correct();
+}
+function wrong5 () {
+    q5.style.display = "none";
+    q6.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct6 () {
+    q6.style.display = "none";
+    q7.style.display = "block";
+
+    correct();
+}
+function wrong6 () {
+    q6.style.display = "none";
+    q7.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correct7 () {
+    q7.style.display = "none";
+    q8.style.display = "block";
+
+    correct();
+}
+function wrong7 () {
+    q7.style.display = "none";
+    q8.style.display = "block";
+
+    wrong();
+}
+/////////////////
+function correctfinal () {
+    correct();
+
+    if (team1points > team2points) {
+        document.getElementById ("winningfirst").innerHTML = team1name.value;
+        document.getElementById ("winningfirstpoints").innerHTML = team1points;
+
+        document.getElementById ("winningsecond").innerHTML = team2name.value;
+        document.getElementById ("winningsecondpoints").innerHTML = team2points;
+
+        document.getElementById ("tied").style.display = "none";
+
+    } else if (team1points < team2points) {
+        document.getElementById ("winningfirst").innerHTML = team2name.value;
+        document.getElementById ("winningfirstpoints").innerHTML = team2points;
+
+        document.getElementById ("winningsecond").innerHTML = team1name.value;
+        document.getElementById ("winningsecondpoints").innerHTML = team1points;
+
+        document.getElementById ("tied").style.display = "none";
+    } else if (team1points == team2points) {
+        document.getElementById ("first").style.display = "none";
+        document.getElementById ("second").style.display = "none";
+        document.getElementById ("tied1name").innerHTML = team1name.value;
+        document.getElementById ("tied2name").innerHTML = team2name.value;
+        document.getElementById ("tiedpoints").innerHTML = team1points;
+    }
+
+    document.getElementById ("winscreen").style.opacity = "1.0";
+    document.getElementById ("winscreen").style.pointerEvents = "all";
+}
+function wrongfinal () {
+    wrong();
+  
+    if (team1points > team2points) {
+        document.getElementById ("winningfirst").innerHTML = team1name.value;
+        document.getElementById ("winningfirstpoints").innerHTML = team1points;
+
+        document.getElementById ("winningsecond").innerHTML = team2name.value;
+        document.getElementById ("winningsecondpoints").innerHTML = team2points;
+
+        document.getElementById ("tied").style.display = "none";
+
+    } else if (team1points < team2points) {
+        document.getElementById ("winningfirst").innerHTML = team2name.value;
+        document.getElementById ("winningfirstpoints").innerHTML = team2points;
+
+        document.getElementById ("winningsecond").innerHTML = team1name.value;
+        document.getElementById ("winningsecondpoints").innerHTML = team1points;
+
+        document.getElementById ("tied").style.display = "none";
+    } else if (team1points == team2points) {
+        document.getElementById ("first").style.display = "none";
+        document.getElementById ("second").style.display = "none";
+        document.getElementById ("tied1name").innerHTML = team1name.value;
+        document.getElementById ("tied2name").innerHTML = team2name.value;
+        document.getElementById ("tiedpoints").innerHTML = team1points;
+    }
+}
+
+// Needed for every correct answer
+function correct () {
+    if (currentTeam == 0) {
+        team1points++;
+        currentTeam++;
+    } else {
+        team2points++;
+        currentTeam--;
+    }
+
+    currentQuestion++;
+    pointPlus.style.opacity = "1.0";
+    setTimeout (function () {
+        pointPlus.style.opacity = "0.0";
+    }, 2000)
+}
+
+function wrong () {
+    if (currentTeam == 0) {
+        team1points--;
+        currentTeam++;
+    } else {
+        team2points--;
+        currentTeam--;
+    }
+    
+    currentQuestion++;
+    pointMinus.style.opacity = "1.0";
+    setTimeout (function () {
+        pointMinus.style.opacity = "0.0";
+    }, 2000)
+}
+</script>
+<style>
+* {
+    font-family:"Open Sans", sanse-serif;
+    text-align:center;
+    background-color:black;
+    color:white;
+    outline:none;
+}
+
+body {
+	
+}
+
+input {
+    width:200px;
+    height:40px;
+    border-radius:10px;
+    border:white solid 1px;
+    margin:3px;
+    transition:all 0.25s;
+}
+
+input:focus {
+    
+}
+
+#teamselector, #questions {
+    transition:all 1s;
+}
+
+#questions {
+    opacity:0;
+    pointer-events:none;
+}
+
+#yes {
+    background-color:darkorange;
+    border-radius:50px;
+    width:200px;
+    margin:auto;
+}
+
+#currentquestion {
+    background-color:darkorange;
+}
+
+#start {
+    margin:3px;
+    width:208px;
+    height:40px;
+    background-color:darkgoldenrod;
+    border:darkgoldenrod solid 1px;
+    border-radius:10px;
+    cursor:pointer;
+    color:rgb(158, 158, 158);
+}
+
+#start:hover {
+    background-color:rgb(129, 95, 9);
+}
+
+#start:active {
+    transform:scale(0.95);
+}
+
+button {
+    transition:all 0.25s;
+    cursor:pointer;
+}
+
+#red, #green, #blue {
+    height:50px;
+    width:200px;
+    border-radius:5px;
+    font-weight:bolder;
+}
+
+#red {
+    background-color:red;
+    border:red solid 1px;
+}
+
+#red:hover {
+    transform:scale(0.95);
+}
+
+#green {
+    background-color:green;
+    border:green solid 1px;
+}
+
+#green:hover {
+    transform:scale(0.95);
+}
+
+#blue {
+    background-color:blue;
+    border:blue solid 1px;
+}
+
+#blue:hover {
+    transform:scale(0.95);
+}
+
+#q2, #q3, #q4, #q5, #q6, #q7, #q8 {
+    display:none;
+}
+
+#pointPlus, #pointMinus {
+    width:150px;
+    opacity:0;
+    transition:all 0.5s;
+    position:fixed;
+    background-color:red;
+    border-radius:5px;
+    left: 50%;
+    top: 20px;
+    transform: translate(-50%, -50%);
+}
+
+#winscreen {
+    width:100%;
+    background-color:black;
+    color:white;
+    height:1000px;
+    position:fixed;
+    transition:all 1s;
+    opacity:0;
+    top:0px;
+    overflow-y:hidden;
+    pointer-events:none;
+}
+</style>
+    </body>
+</html>
